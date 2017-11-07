@@ -21,6 +21,7 @@ export class Web3Service {
     });
   }
 
+
   public bootstrapWeb3() {
     // Checking if Web3 has been injected by the browser (Mist/MetaMask)
     if (typeof window.web3 !== 'undefined') {
@@ -36,6 +37,11 @@ export class Web3Service {
     }
 
     setInterval(() => this.refreshAccounts(), 100);
+  }
+
+  public toWei(amount): number {
+    console.log(this.web3);
+    return this.web3.utils.toWei(amount, 'Ether');
   }
 
   public async artifactsToContract(artifacts) {

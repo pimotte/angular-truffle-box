@@ -24,4 +24,15 @@
   </mat-card-content>
 </mat-card>
 
-
+<mat-card>
+  <mat-card-header>Buy MetaCoin</mat-card-header>
+  <mat-card-content>
+    <mat-form-field>
+      <input type="text" matInput id="buyAmount" placeholder="Amount" (change)="setBuyAmount($event)">
+    </mat-form-field>
+    <mat-form-field class="address-field">
+      <input type="text" matInput id="seller" placeholder="Seller Address" (change)="setSeller($event)">
+    </mat-form-field>
+    <button mat-button id="buy" (click)="buyCoin()">Buy MetaCoin</button>
+  </mat-card-content>
+</mat-card>

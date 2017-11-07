@@ -24,6 +24,20 @@ contract MetaCoin {
 		return true;
 	}
 
+  function buyCoin(address seller, uint amount) public payable {
+    // Check that the value of the balance is covered by the ether sent
+    require (getBalanceInEth(seller) * 1 ether > msg.value * 1 wei);
+    // Check that the MetaCoin balance of the seller is sufficient
+    require (balances[seller] > amount);
+    // Check that the amount to be transferred is covered by the ether sent
+    require (ConvertLib.convert(amount, 2) * 1 ether <= msg.value * 1 wei);
+
+    balances[msg.sender] += amount;
+    balances[seller] -= amount;
+    seller.transfer(msg.value);
+    emit Transfer(seller, msg.sender, amount);
+  }
+
 	function getBalanceInEth(address addr) public view returns(uint){
 		return ConvertLib.convert(getBalance(addr),2);
 	}

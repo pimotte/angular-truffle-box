@@ -18,10 +18,13 @@ export class MetaSenderComponent implements OnInit {
     amount: 5,
     receiver: '',
     balance: 0,
-    account: ''
+    account: '',
+    buyAmount: 0,
+    seller: ''
   };
 
   status = '';
+  buyStatus = '';
 
   constructor(private web3Service: Web3Service, private matSnackBar: MatSnackBar) {
     console.log('Constructor: ' + web3Service);
@@ -57,6 +60,10 @@ export class MetaSenderComponent implements OnInit {
     this.matSnackBar.open(status, null, {duration: 3000});
   }
 
+  setBuyStatus(status) {
+    this.setStatus(status);
+  }
+
   async sendCoin() {
     if (!this.MetaCoin) {
       this.setStatus('Metacoin is not loaded, unable to send transaction');
@@ -81,6 +88,34 @@ export class MetaSenderComponent implements OnInit {
     } catch (e) {
       console.log(e);
       this.setStatus('Error sending coin; see log.');
+    }
+  }
+
+  async buyCoin() {
+    if (!this.MetaCoin) {
+      this.setBuyStatus('Metacoin is not loaded, unable to send transaction');
+      return;
+    }
+
+    console.log('Buying coins' + this.model.buyAmount + ' from ' + this.model.seller);
+    const amount = this.model.buyAmount;
+    const seller = this.model.seller;
+
+
+    this.setBuyStatus('Initiating transaction... (please wait)');
+    try {
+      const deployedMetaCoin = await this.MetaCoin.deployed();
+      const transaction = await deployedMetaCoin.buyCoin.sendTransaction(seller, amount,
+                      {from: this.model.account, value: this.web3Service.toWei((amount * 2).toString())});
+
+      if (!transaction) {
+        this.setBuyStatus('Transaction failed!');
+      } else {
+        this.setBuyStatus('Transaction complete!');
+      }
+    } catch (e) {
+      console.log(e);
+      this.setBuyStatus('Error sending coin; see log.');
     }
   }
 
@@ -110,4 +145,13 @@ export class MetaSenderComponent implements OnInit {
     this.model.receiver = e.target.value;
   }
 
+  setBuyAmount(e) {
+    console.log('Setting buyAmount: ' + e.target.value);
+    this.model.buyAmount = e.target.value;
+  }
+
+  setSeller(e) {
+    console.log('Setting seller: ' + e.target.value);
+    this.model.seller = e.target.value;
+  }
 }
