@@ -24,7 +24,7 @@ contract MetaCoin {
 		return true;
 	}
 
-  function buyCoin(address seller, uint amount) public payable {
+  function buyCoin(address payable seller, uint amount) public payable {
     // Check that the value of the balance is covered by the ether sent
     require (getBalanceInEth(seller) * 1 ether > msg.value * 1 wei);
     // Check that the MetaCoin balance of the seller is sufficient
